@@ -1,0 +1,17 @@
+name: envinj
+on:
+  workflow_dispatch:
+    inputs:
+      app_path:
+        type: string
+jobs:
+  j:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          APP_PATH: ${{ inputs.app_path }}
+        run: |
+          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
+          exit 1
+      - if: always()
+        run: echo "summary step, APP_PATH=$APP_PATH"
