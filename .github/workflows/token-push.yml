@@ -1,0 +1,20 @@
+name: token-push
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git config user.name lab-bot
+          git config user.email lab-bot@users.noreply.github.com
+          git checkout -b token-nonwf
+          echo x >> README.md
+          git commit -qam "token: non-workflow change"
+          git push -q origin token-nonwf && echo "NONWF_PUSH=ok" || echo "NONWF_PUSH=fail"
+          git checkout -q -b token-wf main
+          echo "# touched" >> .github/workflows/ctx.yml
+          git commit -qam "token: workflow change"
+          git push origin token-wf 2>&1 | sed 's/^/WF_PUSH_OUT: /' || true
