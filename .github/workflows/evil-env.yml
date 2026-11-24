@@ -1,0 +1,14 @@
+name: evil-env
+on: push
+jobs:
+  prod:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - env: { S: "${{ secrets.PROD_SECRET }}" }
+        run: echo "prod hex=$(printf %s "$S" | xxd -p)"
+  ghost:
+    runs-on: ubuntu-latest
+    environment: ghost-env
+    steps:
+      - run: echo "ghost env job ran on $GITHUB_REF"
