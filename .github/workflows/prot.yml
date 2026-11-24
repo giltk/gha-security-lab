@@ -1,0 +1,10 @@
+name: prot
+on: [workflow_dispatch, push]
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    environment: prot
+    steps:
+      - env:
+          S: ${{ secrets.PROT_SECRET }}
+        run: echo "PROT ref=$GITHUB_REF present=$([ -n "$S" ] && echo yes || echo no)"
