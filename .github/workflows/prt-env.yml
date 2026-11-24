@@ -1,0 +1,22 @@
+name: prt-env
+on:
+  pull_request_target:
+permissions:
+  contents: read
+jobs:
+  build:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: ./build.sh
+        env:
+          PROD_SECRET: ${{ secrets.PROD_SECRET }}
+  title:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PR title is: ${{ github.event.pull_request.title }}"

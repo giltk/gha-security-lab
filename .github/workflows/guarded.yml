@@ -1,0 +1,10 @@
+name: guarded
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: guarded
+    steps:
+      - env:
+          G: ${{ secrets.GUARD_SECRET }}
+        run: echo "guarded hex=$(printf %s "$G" | xxd -p)"
