@@ -1,0 +1,16 @@
+name: nested
+on: push
+permissions:
+  id-token: write
+jobs:
+  sub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          tok=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=lab" | jq -r .value)
+          python3 -c 'import sys,json,base64; p=sys.argv[1].split(".")[1]; p+="="*(-len(p)%4); print("OIDC", json.loads(base64.urlsafe_b64decode(p))["sub"])' "$tok"
+  env:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - run: echo "release env job ran"
