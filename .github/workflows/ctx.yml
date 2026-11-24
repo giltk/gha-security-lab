@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: report
         env:
-          MARKER: main-v1
+          MARKER: pr-v1
           REPO_SECRET: ${{ secrets.REPO_SECRET }}
         run: |
           echo "MARKER=$MARKER EVENT=$GITHUB_EVENT_NAME"
