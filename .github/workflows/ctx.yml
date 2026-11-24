@@ -1,4 +1,4 @@
-name: ctx
+name: ctx-develop-copy
 on:
   pull_request:
   pull_request_target:
